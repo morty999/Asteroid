@@ -17,7 +17,7 @@ class Projectile:
     def draw(self):
         core.Draw.circle((255,255,255), self.position, self.taille)
 
-    def deplacement(self):
+    def update(self):
         self.vitesse += self.accel
         self.position += self.vitesse
 

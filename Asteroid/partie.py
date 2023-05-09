@@ -3,12 +3,10 @@ from Asteroid.player import Player
 
 class Partie:
     def __init__(self):
-        self.map=Map()
+        self.map = Map()
 
     def show(self):
         self.map.show()
 
-    def addPlayer(self):
-        p = Player()
-        p.IsBot = False
-        self.map.addJoueur(p)
+    def update(self):
+        self.map.update()

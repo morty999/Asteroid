@@ -5,27 +5,29 @@ from Asteroid.partie import Partie
 
 def setup():
     print("start setup")
-    core.WINDOW_SIZE=[800,600]
-    core.fps =60
+    core.WINDOW_SIZE=[800, 600]
+    core.fps = 30
 
+    core
     core.memory("partie",Partie())
-    core.memory("partie").addPlayer()
     print("end setup")
+    p= Partie()
 
 def run():
-    print("start run")
     core.cleanScreen()
-    core.printMemory()
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                core.memory('partie').map.player.avancer()
+            if event.key == pygame.K_DOWN:
+                core.memory('partie').map.player.reculer()
+            if event.key == pygame.K_LEFT:
+                core.memory('partie').map.player.tournerGauche()
+            if event.key == pygame.K_RIGHT:
+                core.memory('partie').map.player.tournerDroite()
+            if event.key == pygame.K_SPACE:
+                core.memory('partie').map.createProj(core.memory('partie').map.player.acc, core.memory('partie').map.player.pos)
+    core.memory("partie").update()
     core.memory("partie").show()
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-
-    if keys[pygame.K_DOWN]:
-
-    if keys[pygame.K_LEFT]:
-
-    if keys[pygame.K_RIGHT]:
-
-    print("end run")
 
 core.main(setup,run)
