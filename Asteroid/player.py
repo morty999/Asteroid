@@ -20,7 +20,7 @@ class Player:
             self.acc += Vector2(0, 1).rotate(self.rotation)
 
         def reculer(self):
-            self.acc += Vector2(0, 1)
+            self.acc += Vector2(0, -1).rotate(self.rotation)
 
         def tournerGauche(self):
             #self.acc += Vector2(-1, 0)

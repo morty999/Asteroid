@@ -6,10 +6,10 @@ import core
 class Projectile:
     def __init__(self):
         self.size = 3
-        self.acc = Vector2(0,3)
+        self.acc = Vector2(0,10)
         self.vel = Vector2()
         self.pos = Vector2()
-        self.lifeTime = 3
+        self.lifeTime = 1.5
         self.startTime = time.time()
 
     def show(self):
