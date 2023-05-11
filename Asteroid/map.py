@@ -10,9 +10,9 @@ from Asteroid.projectile import Projectile
 
 class Map:
     def __init__(self):
-        self.level=0                                         #Niveau de la partie
+        self.level=1                                         #Niveau de la partie
         self.initAsteroidDone = False
-        self.maxAsteroid = 5 + 2 * self.level
+        self.maxAsteroid = 3 + 2 * self.level
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
         self.enemy = []
@@ -82,9 +82,15 @@ class Map:
             aste.pos = pos
         self.asteroid.append(aste)
 
-    def spawnAsteroidV2(self,level):
+    def spawnAsteroidV2(self):
         aste = Asteroid()
         self.asteroid.append(aste)
+
+    def splitAsteroid(self,aste):
+        aste1 = Asteroid(aste.level-1, aste.pos, aste.vel, 90)
+        self.asteroid.append(aste1)
+        aste2 = Asteroid(aste.level-1, aste.pos, aste.vel, 270)
+        self.asteroid.append(aste2)
 
     def checkCollision(self):
         for aste in self.asteroid:
@@ -92,7 +98,7 @@ class Map:
                 if (abs(aste.pos.x - proj.pos.x) < aste.size) and (abs(aste.pos.y - proj.pos.y) < aste.size) :
                     self.projectiles.remove(proj)
                     if aste.level != 1:
-                        self.spawnAsteroidV2()
+                        self.splitAsteroid(aste)
                     self.asteroid.remove(aste)
 
 

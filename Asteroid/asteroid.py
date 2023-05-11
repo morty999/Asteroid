@@ -4,16 +4,21 @@ import core
 
 
 class Asteroid:
-    def __init__(self, level=None, pos=None, inverter=1):
+    def __init__(self, level=None, pos=None, vel=None, rotation=0):
         if level:
             self.level = level
         else:
             self.level = random.randint(1,3)
         self.size = 20 * self.level
-        self.acc = Vector2(random.uniform(-1, 1), random.uniform(-1, 1))*inverter
-        self.vel = Vector2()
+        self.acc = Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
+        if rotation != 0:
+            self.acc = self.acc.rotate(rotation)
+        if vel:
+            self.vel = Vector2(vel)
+        else:
+            self.vel = Vector2()
         if pos:
-            self.pos = pos
+            self.pos = Vector2(pos)
         else:
             self.pos = Vector2(random.randint(0, core.WINDOW_SIZE[0]), random.randint(0, core.WINDOW_SIZE[1]))
 
