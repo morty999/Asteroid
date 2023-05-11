@@ -6,7 +6,7 @@ import core
 class Projectile:
     def __init__(self):
         self.size = 3
-        self.acc = Vector2()
+        self.acc = Vector2(0,3)
         self.vel = Vector2()
         self.pos = Vector2()
         self.lifeTime = 3

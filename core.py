@@ -167,7 +167,7 @@ def main(setupf, runf):
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
-
+                '''
             elif event.type == pygame.KEYDOWN:
                 keyPress = True
                 keyPressValue = event.key
@@ -181,12 +181,7 @@ def main(setupf, runf):
                 for i, k in enumerate(keyPressList):
                     if k == True and event.scancode == i:
                         keyReleaseList[event.key] = 1
-
-
-
-
-
-
+                '''
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
                 if event.button == 1:

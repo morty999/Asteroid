@@ -8,7 +8,7 @@ class Player:
         def __init__(self):
             self.maxSpeed = 6
             self.maxAcc = 2
-            self.decel = 0.98
+            self.decel = 0.95
             self.vies = 5
             self.pos = Vector2(core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2)
             self.acc = Vector2(0, 0)
