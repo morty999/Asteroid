@@ -55,13 +55,13 @@ class Map:
         self.initAsteroid()
         self.checkCollision()
 
-    def createProj(self, vel, pos):
+    def createProj(self, vel, pos, rotation):
         # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
         if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shot_CD):
             proj = Projectile()
             proj.pos = Vector2(pos)
-            a = 0 - vel.angle_to(Vector2(0, 1)) #permet de déterminer l'angle de tir du projectile
-            proj.acc = proj.acc.rotate(a)       #applique la rotation au vecteur d'acceleration du projectile
+            #a = 0 - vel.angle_to(Vector2(0, 1)) #permet de déterminer l'angle de tir du projectile
+            proj.acc = proj.acc.rotate(rotation)       #applique la rotation au vecteur d'acceleration du projectile
             proj.acc += vel                     #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
             self.projectiles.append(proj)
 
