@@ -36,7 +36,8 @@ class Map:
             p1 = (10 + (30*i), 60)
             p2 = (20 + (30*i), 35)
             p3 = (30 + (30*i), 60)
-            core.Draw.polygon(self.color_white, ((p1), (p2), (p3)))
+            p4 = (20 + (30 * i), 50)
+            core.Draw.polygon(self.color_white, ((p1), (p2), (p3), (p4)))
 
     def update(self):
         #check projectiles lifespan

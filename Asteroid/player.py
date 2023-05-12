@@ -9,7 +9,7 @@ class Player:
             self.maxSpeed = 6
             self.maxAcc = 2
             self.rotation = 0
-            self.decel = 0.99
+            self.decel = 0.98
             self.vies = 5
             self.pos = Vector2(core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2)
             self.acc = Vector2(0, 0)
@@ -24,10 +24,10 @@ class Player:
 
         def tournerGauche(self):
             #self.acc += Vector2(-1, 0)
-            self.rotation -= 5
+            self.rotation -= 270/core.fps
         def tournerDroite(self):
             #self.acc += Vector2(1, 0)
-            self.rotation += 5
+            self.rotation += 270/core.fps
 
         def update(self):
             # gestion si accel > accelMax
@@ -61,8 +61,9 @@ class Player:
 
         def show(self):
             #a = 0 - self.vel.angle_to(Vector2(0, 1))
-            p1 = self.pos + Vector2(-5, 0).rotate(self.rotation)
+            p1 = self.pos + Vector2(-7, -5).rotate(self.rotation)
             p2 = self.pos + Vector2(0, 15).rotate(self.rotation)
-            p3 = self.pos + Vector2(5, 0).rotate(self.rotation)
+            p3 = self.pos + Vector2(7, -5).rotate(self.rotation)
+            p4 = self.pos + Vector2(0, 0).rotate(self.rotation)
 
-            core.Draw.polygon(self.color, ((p1), (p2), (p3)))
+            core.Draw.polygon(self.color, ((p1), (p2), (p3),(p4)))

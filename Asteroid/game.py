@@ -49,12 +49,16 @@ class Game:
                     self.BACK_KEY = True
                 if event.key == pygame.K_DOWN:
                     self.DOWN_KEY = True
+                    self.UP_KEY = False
                 if event.key == pygame.K_UP:
                     self.UP_KEY = True
+                    self.DOWN_KEY = False
                 if event.key == pygame.K_LEFT:
                     self.LEFT_KEY = True
+                    self.RIGHT_KEY = False
                 if event.key == pygame.K_RIGHT:
                     self.RIGHT_KEY = True
+                    self.LEFT_KEY = False
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = True
                     

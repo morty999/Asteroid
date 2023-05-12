@@ -5,8 +5,8 @@ from Asteroid.game import Game
 
 def setup():
     print("start setup")
-    core.WINDOW_SIZE = [800, 600]
-    core.fps = 30
+    core.WINDOW_SIZE = [1440, 900]
+    core.fps = 60
     core.memory("game", Game())
     print("end setup")
 
