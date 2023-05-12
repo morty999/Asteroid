@@ -7,7 +7,6 @@ class Menu:
     def __init__(self, game):
         self.game = game
         self.mid_w, self.mid_h = core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2
-        self.run_display = True
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
         self.font_color = (255,255,255)
@@ -43,16 +42,13 @@ class MainMenu(Menu):
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
 
     def display_menu(self):
-        self.run_display = True
-        while self.run_display:
-            self.game.check_events()
-            self.check_input()
-            core.Draw.text(self.font_color,'MAIN MENU', (core.WINDOW_SIZE[0]/2,core.WINDOW_SIZE[1]/2-20),self.font_size,self.font_style)
-            core.Draw.text(self.font_color,'START',(self.startx, self.starty), self.font_size,self.font_style)
-            core.Draw.text(self.font_color,'OPTIONS',(self.optionsx, self.optionsy), self.font_size, self.font_style)
-            core.Draw.text(self.font_color,'CREDITS',(self.creditsx, self.creditsy), self.font_size, self.font_style)
-            self.draw_cursor()
-            self.blit_screen()
+        # self.game.check_events()
+        # self.check_input()
+        core.Draw.text(self.font_color, 'MAIN MENU', (core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2 - 20), self.font_size, self.font_style)
+        core.Draw.text(self.font_color, 'START', (self.startx, self.starty), self.font_size, self.font_style)
+        core.Draw.text(self.font_color, 'OPTIONS', (self.optionsx, self.optionsy), self.font_size, self.font_style)
+        core.Draw.text(self.font_color, 'CREDITS', (self.creditsx, self.creditsy), self.font_size, self.font_style)
+        # self.draw_cursor()
 
     def move_cursor (self):
         if self.game.DOWN_KEY:
@@ -95,6 +91,3 @@ class MainMenu(Menu):
             elif self.state == 'Exit':
                 pass
             self.run_display = False
-
-    def blit_screen(self):
-        pass
