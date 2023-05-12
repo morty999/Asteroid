@@ -163,11 +163,11 @@ def main(setupf, runf):
 
         if keyReleaseList is not None:
             keyReleaseList = [i - 1 if i > 0 else 0 for i in keyReleaseList]
-
+        '''
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
-                '''
+                
             elif event.type == pygame.KEYDOWN:
                 keyPress = True
                 keyPressValue = event.key
@@ -181,7 +181,7 @@ def main(setupf, runf):
                 for i, k in enumerate(keyPressList):
                     if k == True and event.scancode == i:
                         keyReleaseList[event.key] = 1
-                '''
+                
             elif event.type == pygame.MOUSEBUTTONDOWN:
 
                 if event.button == 1:
@@ -214,7 +214,7 @@ def main(setupf, runf):
                     keyReleaseValue = event.key
                 else:
                     keyReleaseValue = None
-
+'''
         clock.tick(fps)
 
         # print(clock.get_time())

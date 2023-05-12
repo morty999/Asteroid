@@ -1,10 +1,18 @@
 import random
+import time
+
 from pygame import Vector2
 import core
 
 
 class Asteroid:
     def __init__(self, level=None, pos=None, vel=None, rotation=0):
+        '''
+        self.spawnTime = time.time()
+        self.protected = True
+        self.protectedTime = 1
+        self.destroyed = False
+        '''
         if level:
             self.level = level
         else:
@@ -24,13 +32,19 @@ class Asteroid:
         self.nbPoints = random.randint(8, 15)
         self.listePoints = []
         for i in range(self.nbPoints):
-            point = Vector2(random.randint(self.size/4,self.size),random.randint(self.size/4,self.size)).rotate((360/self.nbPoints)*i)
+            x = random.randint(int(self.size/5*2), self.size)
+            y = random.randint(int(self.size/5*2), self.size)
+            r = (360/self.nbPoints)*i
+            point = Vector2(x, y).rotate(r)
             self.listePoints.append(point)
+
 
     def show(self):
         drawListePoints=[]
         for i in range(self.nbPoints):
             drawListePoints.append(self.listePoints[i]+self.pos)
+        for pts in drawListePoints:
+            pts.rotate(50)
         core.Draw.polygon((255,255,255), drawListePoints)
 
     def show_old(self):
@@ -48,3 +62,8 @@ class Asteroid:
             self.pos.y = 10
         self.pos += self.vel
         self.acc = (0, 0)
+        '''
+        if self.protected:
+            if time.time() - self.spawnTime > self.protectedTime:
+                self.protected = False
+        '''
