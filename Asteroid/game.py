@@ -1,25 +1,46 @@
 import time
 
 import pygame
+
+import core
 from Asteroid.map import Map
 from Asteroid.player import Player
+from Asteroid.menu import MainMenu
 
 class Game:
     def __init__(self):
+        pygame.init()
+        self.mainMenu = MainMenu(self)
         self.map = Map()
         #Etats
-        self.running, self.playing = True, False
-        #Imput utilisateur
+        self.running, self.playing, self.pauseMenu = True, False, False
+        #Input utilisateur
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
         self.SPACE_KEY, self.START_KEY, self.BACK_KEY = False, False, False
+        #self.font_name = 'Nom'
+        self.font_name =pygame.font.get_default_font()
+        self.BLACK, self.WHITE = (0,0,0), (255,255,255)
 
-
-    def show(self):
-        pass
 
     def update(self):
         self.check_events()
-        self.game_loop()
+
+        if self.playing:
+            self.game_loop()
+
+        elif self.pauseMenu:
+            pass
+
+        else:
+            self.menu_loop()
+
+    def menu_loop(self):
+        self.reset_keys()
+
+        self.mainMenu.display_menu()
+        self.mainMenu.move_cursor()
+        self.mainMenu.blit_screen()
+        self.mainMenu.check_input()
 
 
     def game_loop(self):        # Permet de gérer la boucle de jeu
@@ -39,8 +60,8 @@ class Game:
     def check_events(self):     # Permet de gérer les evennements pygame (set et reset les touches utilisateur)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running, self.playing = False, False
-                # self.curr_menu.run_display = False
+                self.running, self.playing, self.mainMenu, self.pauseMenu = False, False, False, False
+                self.mainMenu.run_display = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
@@ -78,4 +99,5 @@ class Game:
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = False
 
-
+    def reset_keys(self):
+        self.START_KEY, self.BACK_KEY, self.DOWN_KEY, self.UP_KEY, self.LEFT_KEY, self.RIGHT_KEY, self.SPACE_KEY = False, False, False, False, False, False, False,
