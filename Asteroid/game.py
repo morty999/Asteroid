@@ -13,7 +13,7 @@ class Game:
         self.mainMenu = MainMenu(self)
         self.map = Map()
         #Etats
-        self.running, self.playing, self.pauseMenu = True, False, False
+        self.running, self.playing, self.pauseMenu = True, True, False
         #Input utilisateur
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
         self.SPACE_KEY, self.START_KEY, self.BACK_KEY = False, False, False
@@ -68,18 +68,14 @@ class Game:
                     self.START_KEY = True
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = True
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_s:
                     self.DOWN_KEY = True
-                    self.UP_KEY = False
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_z:
                     self.UP_KEY = True
-                    self.DOWN_KEY = False
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_q:
                     self.LEFT_KEY = True
-                    self.RIGHT_KEY = False
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.RIGHT_KEY = True
-                    self.LEFT_KEY = False
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = True
                     
@@ -88,13 +84,13 @@ class Game:
                     self.START_KEY = False
                 if event.key == pygame.K_BACKSPACE:
                     self.BACK_KEY = False
-                if event.key == pygame.K_DOWN:
+                if event.key == pygame.K_s:
                     self.DOWN_KEY = False
-                if event.key == pygame.K_UP:
+                if event.key == pygame.K_z:
                     self.UP_KEY = False
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_q:
                     self.LEFT_KEY = False
-                if event.key == pygame.K_RIGHT:
+                if event.key == pygame.K_d:
                     self.RIGHT_KEY = False
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = False

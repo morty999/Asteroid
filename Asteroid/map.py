@@ -10,22 +10,21 @@ from Asteroid.projectile import Projectile
 
 class Map:
     def __init__(self):
-        self.background = core.Texture("textures/bg_asteroid.jpg", Vector2(0,0), 0, (core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
+        self.background = core.Texture("textures/bg_2.jpg", Vector2(0,0), 0, (core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
         self.background.load()
-        self.level=1                                         #Niveau de la partie
+        self.level = 1                                         # Niveau de la partie
         self.initAsteroidDone = False
-        self.maxAsteroid = 3 + 2 * self.level
+        self.maxAsteroid = 7 + 3 * self.level
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
         self.enemy = []
         self.projectiles = []
         self.player = Player()
-        #Game values
-        self.shot_CD = 0.2
+        # Game values
+        self.shotCD = 0.2
+        self.spawnAsteCD = 3
         self.score = 0
-        self.color_white = (255,255,255)
-
-
+        self.color_white = (255, 255, 255)
 
 
     def show(self):
@@ -33,43 +32,45 @@ class Map:
             self.background.show()
         for elem in self.asteroid:
             elem.show()
-        #for elem in self.enemy:
-            #elem.show()
+        # for elem in self.enemy:
+            # elem.show()
         for elem in self.projectiles:
             elem.show()
         self.player.show()
-        core.Draw.text(self.color_white, "Score: " + str(self.score),(10,0))
+        core.Draw.text(self.color_white, "Score: " + str(self.score), (10, 0))
         for i in range(0, self.player.vies):
             p1 = (10 + (30*i), 60)
             p2 = (20 + (30*i), 35)
             p3 = (30 + (30*i), 60)
-            p4 = (20 + (30 * i), 50)
+            p4 = (20 + (30*i), 50)
             core.Draw.polygon(self.color_white, ((p1), (p2), (p3), (p4)))
 
     def update(self):
-        #check projectiles lifespan
+        # check projectiles lifespan
         for p in self.projectiles:
             if time.time() - p.startTime > p.lifeTime:
                 self.projectiles.remove(p)
-
-        #Update all elements from the map
+        # check time since last asteroid
+        if len(self.asteroid) > 0 and (time.time() - self.asteroid[-1].spawnTime > self.spawnAsteCD):
+            self.spawnAsteroidV2()
+        # Update all elements from the map
         for elem in self.asteroid:
             elem.update()
-        #for elem in self.enemy:
-            #elem.update()
+        # for elem in self.enemy:
+            # elem.update()
         for elem in self.projectiles:
             elem.update()
         self.player.update()
         self.initAsteroid()
         self.checkCollision()
-        #self.PurgeAsteroid()
+        # self.PurgeAsteroid()
 
     def createProj(self, vel, pos, rotation):
         # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
-        if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shot_CD):
+        if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
             proj = Projectile()
             proj.pos = Vector2(pos)
-            proj.acc = proj.acc.rotate(rotation)       #applique la rotation au vecteur d'acceleration du projectile
+            proj.acc = proj.acc.rotate(rotation)        #applique la rotation au vecteur d'acceleration du projectile
             proj.acc += vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
             self.projectiles.append(proj)
 
@@ -102,14 +103,17 @@ class Map:
 
     def checkCollision(self):
         for aste in self.asteroid:
-            for proj in self.projectiles:
-                if (abs(aste.pos.x - proj.pos.x) < ((aste.size) + (proj.size/2))) and (abs(aste.pos.y - proj.pos.y) < ((aste.size) + (proj.size/2))):
-                    self.projectiles.remove(proj)
-                    if aste.level != 1:
-                        self.splitAsteroid(aste)
-                    self.asteroid.remove(aste)
+            if not aste.protected:
+                for proj in self.projectiles:
+                    if (abs(aste.pos.x - proj.pos.x) < (aste.size + (proj.size/2)))\
+                            and (abs(aste.pos.y - proj.pos.y) < (aste.size + (proj.size/2))):
+                        self.projectiles.remove(proj)
+                        if aste.level != 1:
+                            self.splitAsteroid(aste)
+                        self.score += (4 - aste.level) * 100
+                        self.asteroid.remove(aste)
 
-            if (abs(aste.pos.x - self.player.pos.x) < (aste.size)) and (abs(aste.pos.y - self.player.pos.y) < aste.size):
+            if (abs(aste.pos.x - self.player.pos.x)) < aste.size and (abs(aste.pos.y - self.player.pos.y) < aste.size):
                 self.player.pos = Vector2(core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2)
                 self.player.vies -= 1
                 if aste.level != 1:

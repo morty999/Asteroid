@@ -14,11 +14,13 @@ def setup():
 
 
 def run():
-    t=time.time()
+    t = time.time()
     if core.memory("load")==False:
         core.memory("game", Game())
         core.memory("load", True)
     core.cleanScreen()
     core.memory("game").update()
     print(time.time()-t)
+
+
 core.main(setup, run)

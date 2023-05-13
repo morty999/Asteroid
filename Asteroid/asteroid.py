@@ -7,18 +7,15 @@ import core
 
 class Asteroid:
     def __init__(self, level=None, pos=None, vel=None, rotation=0):
-        '''
         self.spawnTime = time.time()
         self.protected = True
         self.protectedTime = 1
-        self.destroyed = False
-        '''
         if level:
             self.level = level
         else:
-            self.level = random.randint(1,3)
+            self.level = random.randint(1, 3)
         self.size = 20 * self.level
-        self.acc = Vector2(random.uniform(-1, 1), random.uniform(-1, 1))
+        self.acc = Vector2(random.uniform(-2, 2), random.uniform(-2, 2))
         if rotation != 0:
             self.acc = self.acc.rotate(rotation)
         if vel:
@@ -28,8 +25,16 @@ class Asteroid:
         if pos:
             self.pos = Vector2(pos)
         else:
-            self.pos = Vector2(random.randint(0, core.WINDOW_SIZE[0]), random.randint(0, core.WINDOW_SIZE[1]))
-        self.nbPoints = random.randint(8, 15)
+            zone = random.randint(1, 4)
+            if zone == 1:
+                self.pos = Vector2(1, random.randint(1, core.WINDOW_SIZE[1]))
+            elif zone == 2:
+                self.pos = Vector2(random.randint(1, core.WINDOW_SIZE[0]), 1)
+            elif zone == 3:
+                self.pos = Vector2(core.WINDOW_SIZE[0]-1, random.randint(0, core.WINDOW_SIZE[1]))
+            else:
+                self.pos = Vector2(random.randint(0, core.WINDOW_SIZE[0]), core.WINDOW_SIZE[1]-1)
+        self.nbPoints = random.randint(8, 13)
         self.listePoints = []
         for i in range(self.nbPoints):
             x = random.randint(int(self.size/5*2), self.size)
@@ -45,10 +50,11 @@ class Asteroid:
             drawListePoints.append(self.listePoints[i]+self.pos)
         for pts in drawListePoints:
             pts.rotate(50)
-        core.Draw.polygon((255,255,255), drawListePoints)
+        core.Draw.polygon((170, 170, 170), drawListePoints)
 
     def show_old(self):
-        core.Draw.circle((255,255,255), self.pos, self.size)
+        core.Draw.circle((255, 255, 255), self.pos, self.size)
+
     def update(self):
         self.vel += self.acc
         # gestion des bordures
@@ -62,8 +68,8 @@ class Asteroid:
             self.pos.y = 10
         self.pos += self.vel
         self.acc = (0, 0)
-        '''
+
         if self.protected:
             if time.time() - self.spawnTime > self.protectedTime:
                 self.protected = False
-        '''
+
