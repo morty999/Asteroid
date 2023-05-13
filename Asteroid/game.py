@@ -35,13 +35,14 @@ class Game:
             self.menu_loop()
 
     def menu_loop(self):
+        #core.Draw.text((255,255,255), "MAIN MENU", (10,0))
+        self.mainMenu.display_menu()
+        '''
         self.reset_keys()
 
-        self.mainMenu.display_menu()
         self.mainMenu.move_cursor()
-        self.mainMenu.blit_screen()
         self.mainMenu.check_input()
-
+        '''
 
     def game_loop(self):        # Permet de gérer la boucle de jeu
         if self.UP_KEY:
