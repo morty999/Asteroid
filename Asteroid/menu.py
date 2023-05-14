@@ -34,7 +34,7 @@ class Menu:
 class MainMenu(Menu):
     def __init__(self,game):
         Menu.__init__(self,game)
-        self.state = "Start"dddddddd
+        self.state = "Start"
         self.startx, self.starty = self.mid_w, self.mid_h + 70
         self.optionsx, self.optionsy = self.mid_w, self.mid_h + 140
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 210

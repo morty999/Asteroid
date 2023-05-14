@@ -18,7 +18,7 @@ class Game:
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
         self.SPACE_KEY, self.START_KEY, self.BACK_KEY = False, False, False
         #self.font_name = 'Nom'
-        self.font_name =pygame.font.get_default_font()
+        self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (0,0,0), (255,255,255)
 
 
