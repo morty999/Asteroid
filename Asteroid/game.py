@@ -54,7 +54,7 @@ class Game:
         if self.RIGHT_KEY:
             self.map.player.tournerDroite()
         if self.SPACE_KEY:
-            self.map.createProj(self.map.player.vel, self.map.player.pos, self.map.player.rotation)
+            self.map.player.createProj(self.map.player.vel, self.map.player.pos, self.map.player.rotation)
         self.map.update()
         self.map.show()
                 
