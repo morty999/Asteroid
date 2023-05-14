@@ -106,3 +106,11 @@ class MainMenu(Menu):
             elif self.state == 'Exit':
                 pass
             self.run_display = False
+
+    def display_text(color, texte, position, taille=30, font='Arial'):
+        pygame.font.init()
+        myfont = pygame.font.
+        textsurface = myfont.render(texte, False, color)
+        if len(color)>3:
+            textsurface.set_alpha(color[3])
+        screen.blit(textsurface, position)
