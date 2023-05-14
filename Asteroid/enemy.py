@@ -4,15 +4,19 @@ import time
 from pygame import Vector2
 
 import core
+from Asteroid.projectile import Projectile
 
 
 class Enemy:
     def __init__(self):
+        self.shotCD = 2
+        self.projectiles = []
         self.spawnTime = time.time()
+        self.lasMoveTime = time.time()
+        self.moveCD = random.uniform(1, 3)
         self.maxSpeed = 6
-        self.maxAcc = 2
         self.rotation = 0
-        self.decel = 0.995
+        self.decel = 0.99
         self.vies = 1
         zone = random.randint(1, 4)
         if zone == 1:       # haut
@@ -33,7 +37,12 @@ class Enemy:
         self.sprite.load()
 
 
+
     def update(self):
+        if time.time() - self.lasMoveTime > self.moveCD:
+            self.acc = Vector2(random.randint(3, 6), 0).rotate(random.randint(1,360))
+            self.lasMoveTime = time.time()
+            self.moveCD = random.uniform(1, 3)
         # gestion changement vitesse si acc non nulle sinon deceleration
         if self.acc.length() != 0:
             self.vel += self.acc
@@ -60,14 +69,27 @@ class Enemy:
         self.pos += self.vel
         self.sprite.pos = self.pos
 
-    def show(self):
-        self.sprite.show()
-        '''
-        # a = 0 - self.vel.angle_to(Vector2(0, 1))
-        p1 = self.pos + Vector2(-7, -5).rotate(self.rotation)
-        p2 = self.pos + Vector2(0, 15).rotate(self.rotation)
-        p3 = self.pos + Vector2(7, -5).rotate(self.rotation)
-        p4 = self.pos + Vector2(0, 0).rotate(self.rotation)
+        # check projectiles lifespan
+        for p in self.projectiles:
+            if time.time() - p.startTime > p.lifeTime:
+                self.projectiles.remove(p)
 
-        core.Draw.polygon(self.color, ((p1), (p2), (p3), (p4)))
-        '''
+        # update all projectiles
+        for elem in self.projectiles:
+            elem.update()
+
+    def show(self):
+        for elem in self.projectiles:
+            elem.show()
+        self.sprite.show()
+
+    def createProj(self,player):
+        # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
+        if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
+            proj = Projectile()
+            proj.pos = Vector2(self.pos)
+            #rotation = self.pos.angle_to(player)
+            #proj.acc = proj.acc.rotate(rotation)            #applique la rotation au vecteur d'acceleration du projectile
+            proj.acc = Vector2(player - self.pos).normalize()*10
+            #proj.acc += self.vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
+            self.projectiles.append(proj)

@@ -1,11 +1,16 @@
 import random
+import time
+
 from pygame import Vector2
 
 import core
+from Asteroid.projectile import Projectile
 
 
 class Player:
     def __init__(self):
+        self.projectiles = []
+        self.shotCD = 0.2
         self.maxSpeed = 6
         self.maxAcc = 2
         self.rotation = 0
@@ -60,7 +65,17 @@ class Player:
         # déplacement par rapport à la vitesse
         self.pos += self.vel
 
+        # check projectiles lifespan
+        for p in self.projectiles:
+            if time.time() - p.startTime > p.lifeTime:
+                self.projectiles.remove(p)
+
+        for elem in self.projectiles:
+            elem.update()
+
     def show(self):
+        for elem in self.projectiles:
+            elem.show()
         # a = 0 - self.vel.angle_to(Vector2(0, 1))
         p1 = self.pos + Vector2(-7, -5).rotate(self.rotation)
         p2 = self.pos + Vector2(0, 15).rotate(self.rotation)
@@ -68,3 +83,12 @@ class Player:
         p4 = self.pos + Vector2(0, 0).rotate(self.rotation)
 
         core.Draw.polygon(self.color, ((p1), (p2), (p3), (p4)))
+
+    def createProj(self, vel, pos, rotation):
+        # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
+        if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
+            proj = Projectile()
+            proj.pos = Vector2(pos)
+            proj.acc = proj.acc.rotate(rotation)        #applique la rotation au vecteur d'acceleration du projectile
+            proj.acc += vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
+            self.projectiles.append(proj)
