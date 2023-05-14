@@ -13,7 +13,7 @@ class Game:
         self.mainMenu = MainMenu(self)
         self.map = Map()
         #Etats
-        self.running, self.playing, self.pauseMenu = True, True, False
+        self.running, self.playing, self.pauseMenu = True, False, False
         #Input utilisateur
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
         self.SPACE_KEY, self.START_KEY, self.BACK_KEY = False, False, False

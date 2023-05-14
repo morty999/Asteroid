@@ -34,7 +34,7 @@ class Menu:
 class MainMenu(Menu):
     def __init__(self,game):
         Menu.__init__(self,game)
-        self.state = "Start"
+        self.state = "Start"dddddddd
         self.startx, self.starty = self.mid_w, self.mid_h + 70
         self.optionsx, self.optionsy = self.mid_w, self.mid_h + 140
         self.creditsx, self.creditsy = self.mid_w, self.mid_h + 210
@@ -42,13 +42,14 @@ class MainMenu(Menu):
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
 
     def display_menu(self):
-        # self.game.check_events()
-        # self.check_input()
+        self.game.check_events()
+        self.check_input()
         core.Draw.text(self.font_color, 'MAIN MENU', (core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2 - 20), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'START', (self.startx, self.starty), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'OPTIONS', (self.optionsx, self.optionsy), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'CREDITS', (self.creditsx, self.creditsy), self.font_size, self.font_style)
-        # self.draw_cursor()
+        core.Draw.text(self.font_color, 'EXIT', (self.exitx, self.exity), self.font_size, self.font_style)
+        self.draw_cursor()
 
     def move_cursor (self):
         if self.game.DOWN_KEY:
