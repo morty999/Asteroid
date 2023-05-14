@@ -4,6 +4,7 @@ import core
 from pygame import Vector2
 
 from Asteroid.asteroid import Asteroid
+from Asteroid.enemy import Enemy
 from Asteroid.player import Player
 from Asteroid.projectile import Projectile
 
@@ -15,16 +16,21 @@ class Map:
         self.level = 1                                         # Niveau de la partie
         self.initAsteroidDone = False
         self.maxAsteroid = 7 + 3 * self.level
+        self.maxEnemy = 2
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
         self.enemy = []
         self.projectiles = []
         self.player = Player()
+        self.color_white = (255, 255, 255)
         # Game values
         self.shotCD = 0.2
         self.spawnAsteCD = 3
+        self.spawnEnemyCD = 10
         self.score = 0
-        self.color_white = (255, 255, 255)
+        self.startTime = time.time()
+        self.elapsedTime = time.time()
+
 
 
     def show(self):
@@ -32,12 +38,13 @@ class Map:
             self.background.show()
         for elem in self.asteroid:
             elem.show()
-        # for elem in self.enemy:
-            # elem.show()
+        for elem in self.enemy:
+            elem.show()
         for elem in self.projectiles:
             elem.show()
         self.player.show()
         core.Draw.text(self.color_white, "Score: " + str(self.score), (10, 0))
+        core.Draw.text(self.color_white, "Time: " + str(int(self.elapsedTime)), (10, 100))
         for i in range(0, self.player.vies):
             p1 = (10 + (30*i), 60)
             p2 = (20 + (30*i), 35)
@@ -46,6 +53,7 @@ class Map:
             core.Draw.polygon(self.color_white, ((p1), (p2), (p3), (p4)))
 
     def update(self):
+        self.elapsedTime = time.time() - self.startTime
         # check projectiles lifespan
         for p in self.projectiles:
             if time.time() - p.startTime > p.lifeTime:
@@ -53,11 +61,13 @@ class Map:
         # check time since last asteroid
         if len(self.asteroid) > 0 and (time.time() - self.asteroid[-1].spawnTime > self.spawnAsteCD):
             self.spawnAsteroidV2()
+        if len(self.enemy) == 0 or (len(self.enemy) < self.maxEnemy and (time.time() - self.enemy[-1].spawnTime > self.spawnEnemyCD)):
+            self.spawnEnemy()
         # Update all elements from the map
         for elem in self.asteroid:
             elem.update()
-        # for elem in self.enemy:
-            # elem.update()
+        for elem in self.enemy:
+            elem.update()
         for elem in self.projectiles:
             elem.update()
         self.player.update()
@@ -94,6 +104,10 @@ class Map:
     def spawnAsteroidV2(self):
         aste = Asteroid()
         self.asteroid.append(aste)
+
+    def spawnEnemy(self):
+        ene = Enemy()
+        self.enemy.append(ene)
 
     def splitAsteroid(self,aste):
         aste1 = Asteroid(aste.level-1, aste.pos, aste.vel, 90)
