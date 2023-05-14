@@ -1,4 +1,5 @@
 import pygame
+from pygame import Vector2
 
 import core
 
@@ -6,16 +7,28 @@ import core
 class Menu:
     def __init__(self, game):
         self.game = game
-        self.mid_w, self.mid_h = core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2
+        self.mid_w, self.mid_h, self.indent_w, self.indent_h = core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2, 200, 200
+        self.line_spacing = 70
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
+        self.offsetCursor = Vector2()
         self.font_color = (255,255,255)
         self.font_size = 50
+        self.cursorLength = 350
+        self.cursorHeight = self.font_size +20
         self.font_style = 'Arial'
 
 
     def draw_cursor(self):
         core.Draw.text(self.font_color, '*', (self.cursor_rect.x, self.cursor_rect.y),45, self.font_style)
+        self.offsetCursor = Vector2(self.cursor_rect.x,self.cursor_rect.y)
+        # def points rectangle Cursor
+        p1 = self.offsetCursor
+        p2 = self.offsetCursor + Vector2(self.cursorLength, 0)
+        p3 = self.offsetCursor + Vector2(self.cursorLength, self.cursorHeight)
+        p4 = self.offsetCursor + Vector2(0, self.cursorHeight)
+        core.Draw.polyline(self.font_color,(p1, p2, p3, p4),5)
+
 
     def blit_screen(self):
         self.game.window.blit_screen(self.game.display,(0,0))
@@ -35,16 +48,17 @@ class MainMenu(Menu):
     def __init__(self,game):
         Menu.__init__(self,game)
         self.state = "Start"
-        self.startx, self.starty = self.mid_w, self.mid_h + 70
-        self.optionsx, self.optionsy = self.mid_w, self.mid_h + 140
-        self.creditsx, self.creditsy = self.mid_w, self.mid_h + 210
-        self.exitx, self.exity = self.mid_w, self.mid_h + 280
+        self.menux, self.menuy = self.indent_w, self.indent_h - self.line_spacing/2
+        self.startx, self.starty = self.indent_w, self.indent_h + self.line_spacing
+        self.optionsx, self.optionsy = self.indent_w, self.indent_h + 2 * self.line_spacing
+        self.creditsx, self.creditsy = self.indent_w, self.indent_h + 3 * self.line_spacing
+        self.exitx, self.exity = self.indent_w, self.indent_h + 4 * self.line_spacing
         self.cursor_rect.midtop = (self.startx + self.offset, self.starty)
 
     def display_menu(self):
         self.game.check_events()
         self.check_input()
-        core.Draw.text(self.font_color, 'MAIN MENU', (core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2 - 20), self.font_size, self.font_style)
+        core.Draw.text(self.font_color, 'MAIN MENU', (self.menux, self.menuy), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'START', (self.startx, self.starty), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'OPTIONS', (self.optionsx, self.optionsy), self.font_size, self.font_style)
         core.Draw.text(self.font_color, 'CREDITS', (self.creditsx, self.creditsy), self.font_size, self.font_style)

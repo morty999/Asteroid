@@ -51,6 +51,7 @@ class Asteroid:
         for pts in drawListePoints:
             pts.rotate(50)
         core.Draw.polygon((170, 170, 170), drawListePoints)
+        core.Draw.polyline((130,130,130), drawListePoints, 5)
 
     def show_old(self):
         core.Draw.circle((255, 255, 255), self.pos, self.size)
