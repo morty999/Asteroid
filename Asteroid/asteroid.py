@@ -10,6 +10,7 @@ class Asteroid:
         self.spawnTime = time.time()
         self.protected = True
         self.protectedTime = 1
+        self.destroyed = False
         if level:
             self.level = level
         else:

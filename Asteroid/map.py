@@ -15,7 +15,7 @@ class Map:
         self.background.load()
         self.level = 1                                         # Niveau de la partie
         self.initAsteroidDone = False
-        self.maxAsteroid = 7 + 3 * self.level
+        self.maxAsteroid = 5 + 2 * self.level
         self.maxEnemy = 2
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
@@ -28,6 +28,7 @@ class Map:
         self.score = 0
         self.startTime = time.time()
         self.elapsedTime = time.time()
+        self.spawnTimeEnemy = time.time()
 
 
 
@@ -51,10 +52,13 @@ class Map:
     def update(self):
         self.elapsedTime = time.time() - self.startTime
         # check time since last asteroid
-        if len(self.asteroid) > 0 and (time.time() - self.asteroid[-1].spawnTime > self.spawnAsteCD):
+        if len(self.asteroid) == 0 and self.initAsteroidDone\
+                or (len(self.asteroid) > 0 and (time.time() - self.asteroid[-1].spawnTime > self.spawnAsteCD)):
             self.spawnAsteroidV2()
-        if len(self.enemy) == 0 or (len(self.enemy) < self.maxEnemy and (time.time() - self.enemy[-1].spawnTime > self.spawnEnemyCD)):
+        if not self.initAsteroidDone \
+                or (len(self.enemy) < self.maxEnemy and (time.time() - self.spawnTimeEnemy > self.spawnEnemyCD)):
             self.spawnEnemy()
+            self.spawnTimeEnemy = time.time()
         # Update all elements from the map
         for elem in self.asteroid:
             elem.update()
@@ -64,7 +68,7 @@ class Map:
         self.player.update()
         self.initAsteroid()
         self.checkCollision()
-        # self.PurgeAsteroid()
+        self.PurgeAsteroid()
 
     def initAsteroid(self):
         if not self.initAsteroidDone:
@@ -107,14 +111,14 @@ class Map:
                         if aste.level != 1:
                             self.splitAsteroid(aste)
                         self.score += (4 - aste.level) * 100
-                        self.asteroid.remove(aste)
+                        aste.destroyed = True
 
             if (abs(aste.pos.x - self.player.pos.x)) < aste.size and (abs(aste.pos.y - self.player.pos.y) < aste.size):
                 self.player.pos = Vector2(core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2)
                 self.player.vies -= 1
                 if aste.level != 1:
                     self.splitAsteroid(aste)
-                self.asteroid.remove(aste)
+                aste.destroyed = True
 
         for enemy in self.enemy:
             for proj in enemy.projectiles:
@@ -124,11 +128,16 @@ class Map:
                     self.player.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
                     self.player.vies -= 1
             for proj in self.player.projectiles:
-                if (abs(enemy.pos.x - proj.pos.x) < (8 + (proj.size / 2))) \
-                        and (abs(enemy.pos.y - proj.pos.y) < (8 + (proj.size / 2))):
-                    enemy.projectiles.remove(proj)
+                if (abs(enemy.pos.x - proj.pos.x) < (27 + (proj.size / 2))) \
+                        and (abs(enemy.pos.y - proj.pos.y) < (27 + (proj.size / 2))):
+                    self.player.projectiles.remove(proj)
+                    self.enemy.remove(enemy)
+                    self.score += 1000
 
-
+    def PurgeAsteroid(self):
+        for aste in self.asteroid:
+            if aste.destroyed:
+                self.asteroid.remove(aste)
 
 '''
             for aster in self.asteroid:
@@ -144,8 +153,5 @@ class Map:
                             aster.destroyed = True
                 break
 
-    def PurgeAsteroid(self):
-        for aste in self.asteroid:
-            if aste.destroyed:
-                self.asteroid.remove(aste)
+
 '''

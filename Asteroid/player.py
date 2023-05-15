@@ -10,7 +10,7 @@ from Asteroid.projectile import Projectile
 class Player:
     def __init__(self):
         self.projectiles = []
-        self.shotCD = 0.2
+        self.shotCD = 0.3
         self.maxSpeed = 6
         self.maxAcc = 2
         self.rotation = 0
@@ -20,6 +20,8 @@ class Player:
         self.acc = Vector2(0, 0)
         self.vel = Vector2(0, 0)
         self.color = (255, 255, 255)
+        #gestion bonus
+        self.bonusSpeed, self.bonusProjNumber, self.bonusProjSize, self.bonusProjLevel, self.bonusShield = 1, 5, 5, 1, 1
 
     def avancer(self):
         self.acc += Vector2(0, 1).rotate(self.rotation)
@@ -87,8 +89,15 @@ class Player:
     def createProj(self, vel, pos, rotation):
         # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
         if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
-            proj = Projectile()
-            proj.pos = Vector2(pos)
-            proj.acc = proj.acc.rotate(rotation)        #applique la rotation au vecteur d'acceleration du projectile
-            proj.acc += vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
-            self.projectiles.append(proj)
+            for i in range(0, self.bonusProjNumber):
+                if i % 2 == 0:
+                    rotation += 15*i
+                else:
+                    rotation -= 15*i
+                proj = Projectile()
+                proj.size = 1 + 2 * self.bonusProjSize
+                proj.color = (0, 219, 255)
+                proj.pos = Vector2(pos)
+                proj.acc = proj.acc.rotate(rotation)        #applique la rotation au vecteur d'acceleration du projectile
+                proj.acc += vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
+                self.projectiles.append(proj)

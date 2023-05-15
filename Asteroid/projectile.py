@@ -9,11 +9,12 @@ class Projectile:
         self.acc = Vector2(0,10)
         self.vel = Vector2()
         self.pos = Vector2()
-        self.lifeTime = 1.5
+        self.lifeTime = 1
         self.startTime = time.time()
+        self.color = (255,0,0)
 
     def show(self):
-        core.Draw.circle((255,0,0), self.pos, self.size)
+        core.Draw.circle(self.color, self.pos, self.size)
 
     def update(self):
         self.vel += self.acc

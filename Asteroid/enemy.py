@@ -11,7 +11,6 @@ class Enemy:
     def __init__(self):
         self.shotCD = 2
         self.projectiles = []
-        self.spawnTime = time.time()
         self.lasMoveTime = time.time()
         self.moveCD = random.uniform(1, 3)
         self.maxSpeed = 6
@@ -87,9 +86,8 @@ class Enemy:
         # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
         if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
             proj = Projectile()
+            proj.size = 5
             proj.pos = Vector2(self.pos)
-            #rotation = self.pos.angle_to(player)
-            #proj.acc = proj.acc.rotate(rotation)            #applique la rotation au vecteur d'acceleration du projectile
             proj.acc = Vector2(player - self.pos).normalize()*10
-            #proj.acc += self.vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
+            proj.lifeTime = 3
             self.projectiles.append(proj)
