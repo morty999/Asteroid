@@ -10,6 +10,7 @@ class Projectile:
         self.vel = Vector2()
         self.pos = Vector2()
         self.lifeTime = 1
+        self.life = 1
         self.startTime = time.time()
         self.color = (255,0,0)
 

@@ -9,7 +9,8 @@ from Asteroid.projectile import Projectile
 
 class Enemy:
     def __init__(self):
-        self.shotCD = 2
+        self.destroyed = False
+        self.shotCD = 3
         self.projectiles = []
         self.lasMoveTime = time.time()
         self.moveCD = random.uniform(1, 3)

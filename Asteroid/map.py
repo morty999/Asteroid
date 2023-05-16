@@ -4,6 +4,7 @@ import core
 from pygame import Vector2
 
 from Asteroid.asteroid import Asteroid
+from Asteroid.bonus import Bonus
 from Asteroid.enemy import Enemy
 from Asteroid.player import Player
 from Asteroid.projectile import Projectile
@@ -20,8 +21,10 @@ class Map:
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
         self.enemy = []
+        self.bonus = []
         self.player = Player()
         self.color_white = (255, 255, 255)
+        self.color_NeonBlue = (0, 219, 255)
         # Game values
         self.spawnAsteCD = 3
         self.spawnEnemyCD = 10
@@ -39,15 +42,25 @@ class Map:
             elem.show()
         for elem in self.enemy:
             elem.show()
+        for elem in self.bonus:
+            elem.show()
         self.player.show()
         core.Draw.text(self.color_white, "Score: " + str(self.score), (10, 0))
-        core.Draw.text(self.color_white, "Time: " + str(int(self.elapsedTime)), (10, 100))
+        core.Draw.text(self.color_white, "Time: " + str(int(self.elapsedTime)), (10, 60))
+        core.Draw.text(self.color_white, "Bomb: " + str(int(self.player.bomb)), (10, 140))
         for i in range(0, self.player.vies):
             p1 = (10 + (30*i), 60)
             p2 = (20 + (30*i), 35)
             p3 = (30 + (30*i), 60)
             p4 = (20 + (30*i), 50)
             core.Draw.polygon(self.color_white, ((p1), (p2), (p3), (p4)))
+        for i in range(0, self.player.bomb):
+            p1 = (10 + (30*i), 100)
+            p2 = (30 + (30*i), 100)
+            p3 = (30 + (30*i), 120)
+            p4 = (10 + (30*i), 120)
+            core.Draw.polygon(self.color_NeonBlue, ((p1), (p2), (p3), (p4)))
+            core.Draw.circle(self.color_NeonBlue,(20+(30*i),110),12)
 
     def update(self):
         self.elapsedTime = time.time() - self.startTime
@@ -59,6 +72,10 @@ class Map:
                 or (len(self.enemy) < self.maxEnemy and (time.time() - self.spawnTimeEnemy > self.spawnEnemyCD)):
             self.spawnEnemy()
             self.spawnTimeEnemy = time.time()
+        # check bonus lifespan
+        for b in self.bonus:
+            if time.time() - b.startTime > b.lifeTime:
+                self.bonus.remove(b)
         # Update all elements from the map
         for elem in self.asteroid:
             elem.update()
@@ -68,7 +85,7 @@ class Map:
         self.player.update()
         self.initAsteroid()
         self.checkCollision()
-        self.PurgeAsteroid()
+        self.Purge()
 
     def initAsteroid(self):
         if not self.initAsteroidDone:
@@ -107,15 +124,22 @@ class Map:
                 for proj in self.player.projectiles:
                     if (abs(aste.pos.x - proj.pos.x) < (aste.size + (proj.size/2)))\
                             and (abs(aste.pos.y - proj.pos.y) < (aste.size + (proj.size/2))):
-                        self.player.projectiles.remove(proj)
+                        if proj.life == 1:
+                            self.player.projectiles.remove(proj)
+                        else:
+                            proj.life -= 1
                         if aste.level != 1:
                             self.splitAsteroid(aste)
                         self.score += (4 - aste.level) * 100
                         aste.destroyed = True
+                        if random.randint(1,100) < 10 * aste.level:
+                            #bonus = Bonus(aste.pos)
+                            self.bonus.append(Bonus(aste.pos))
 
-            if (abs(aste.pos.x - self.player.pos.x)) < aste.size and (abs(aste.pos.y - self.player.pos.y) < aste.size):
-                self.player.pos = Vector2(core.WINDOW_SIZE[0]/2, core.WINDOW_SIZE[1]/2)
-                self.player.vies -= 1
+            if (abs(aste.pos.x - self.player.pos.x)) < aste.size \
+                    and (abs(aste.pos.y - self.player.pos.y) < aste.size) \
+                    and not self.player.immunity:
+                self.player.kill()
                 if aste.level != 1:
                     self.splitAsteroid(aste)
                 aste.destroyed = True
@@ -123,21 +147,48 @@ class Map:
         for enemy in self.enemy:
             for proj in enemy.projectiles:
                 if (abs(self.player.pos.x - proj.pos.x) < (8 + (proj.size / 2))) \
-                        and (abs(self.player.pos.y - proj.pos.y) < (8 + (proj.size / 2))):
+                        and (abs(self.player.pos.y - proj.pos.y) < (8 + (proj.size / 2))) \
+                        and not self.player.immunity:
                     enemy.projectiles.remove(proj)
-                    self.player.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
-                    self.player.vies -= 1
+                    self.player.kill()
             for proj in self.player.projectiles:
                 if (abs(enemy.pos.x - proj.pos.x) < (27 + (proj.size / 2))) \
                         and (abs(enemy.pos.y - proj.pos.y) < (27 + (proj.size / 2))):
-                    self.player.projectiles.remove(proj)
-                    self.enemy.remove(enemy)
+                    if proj.life == 1:
+                        self.player.projectiles.remove(proj)
+                    else:
+                        proj.life -= 1
+                    enemy.destroyed = True
+                    self.bonus.append(Bonus(enemy.pos))
                     self.score += 1000
+        for bonus in self.bonus:
+            if (abs(self.player.pos.x - bonus.pos.x) < (8 + (bonus.size / 2))) \
+                    and (abs(self.player.pos.y - bonus.pos.y) < (8 + (bonus.size / 2))):
+                if bonus.type == 1:
+                    self.player.vies += 1
+                    self.bonus.remove(bonus)
+                elif bonus.type == 2:
+                    self.player.bonusSpeed += 1
+                    self.bonus.remove(bonus)
+                elif bonus.type == 3:
+                    self.player.bonusProjNumber += 1
+                    self.bonus.remove(bonus)
+                elif bonus.type == 4:
+                    self.player.bonusProjSize += 1
+                    self.bonus.remove(bonus)
+                elif bonus.type == 5:
+                    self.player.bomb += 1
+                    self.bonus.remove(bonus)
+                #elif bonus.type == 6:
 
-    def PurgeAsteroid(self):
+
+    def Purge(self):
         for aste in self.asteroid:
             if aste.destroyed:
                 self.asteroid.remove(aste)
+        for enemy in self.enemy:
+            if enemy.destroyed:
+                self.enemy.remove(enemy)
 
 '''
             for aster in self.asteroid:

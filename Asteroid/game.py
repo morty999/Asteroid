@@ -16,7 +16,7 @@ class Game:
         self.running, self.playing, self.pauseMenu = True, False, False
         #Input utilisateur
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
-        self.SPACE_KEY, self.START_KEY, self.BACK_KEY = False, False, False
+        self.SPACE_KEY, self.SPECIAL_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
         #self.font_name = 'Nom'
         self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (0,0,0), (255, 255, 255)
@@ -54,7 +54,9 @@ class Game:
         if self.RIGHT_KEY:
             self.map.player.tournerDroite()
         if self.SPACE_KEY:
-            self.map.player.createProj(self.map.player.vel, self.map.player.pos, self.map.player.rotation)
+            self.map.player.createProj()
+        if self.SPECIAL_KEY:
+            self.map.player.createBomb()
         self.map.update()
         self.map.show()
                 
@@ -77,6 +79,8 @@ class Game:
                     self.LEFT_KEY = True
                 if event.key == pygame.K_d:
                     self.RIGHT_KEY = True
+                if event.key == pygame.K_f:
+                    self.SPECIAL_KEY = True
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = True
                     
@@ -93,6 +97,8 @@ class Game:
                     self.LEFT_KEY = False
                 if event.key == pygame.K_d:
                     self.RIGHT_KEY = False
+                if event.key == pygame.K_f:
+                    self.SPECIAL_KEY = False
                 if event.key == pygame.K_SPACE:
                     self.SPACE_KEY = False
 

@@ -10,6 +10,9 @@ def setup():
     core.WINDOW_SIZE = [1440, 900]
     core.fps = 60
     core.memory("load", False)
+    core.memory("meanTime", 0)
+    core.memory("sumTime", 0)
+    core.memory("FrameCPT", 1)
     print("end setup")
 
 
@@ -20,7 +23,8 @@ def run():
         core.memory("load", True)
     core.cleanScreen()
     core.memory("game").update()
-    print(time.time()-t)
+    core.memory("meanTime", (core.memory("sumTime")+time.time()-t)/core.memory("FrameCPT"))
+    print(core.memory("meanTime"))
 
 
 core.main(setup, run)

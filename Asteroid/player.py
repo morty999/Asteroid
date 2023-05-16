@@ -9,6 +9,9 @@ from Asteroid.projectile import Projectile
 
 class Player:
     def __init__(self):
+        self.immunity = True
+        self.immunityStart = time.time()
+        self.immunityDuration = 2
         self.projectiles = []
         self.shotCD = 0.3
         self.maxSpeed = 6
@@ -19,9 +22,11 @@ class Player:
         self.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
         self.acc = Vector2(0, 0)
         self.vel = Vector2(0, 0)
-        self.color = (255, 255, 255)
+        self.color_white = (255, 255, 255)
+        self.color_NeonBlue = (0, 219, 255)
         #gestion bonus
-        self.bonusSpeed, self.bonusProjNumber, self.bonusProjSize, self.bonusProjLevel, self.bonusShield = 1, 5, 5, 1, 1
+        self.bonusSpeed, self.bonusProjNumber, self.bonusProjSize, self.bonusProjLevel, self.bomb = 1, 1, 1, 1, 2
+        self.lastBombTime = time.time()
 
     def avancer(self):
         self.acc += Vector2(0, 1).rotate(self.rotation)
@@ -31,11 +36,11 @@ class Player:
 
     def tournerGauche(self):
         # self.acc += Vector2(-1, 0)
-        self.rotation -= 270 / core.fps
+        self.rotation -= 225 / core.fps
 
     def tournerDroite(self):
         # self.acc += Vector2(1, 0)
-        self.rotation += 270 / core.fps
+        self.rotation += 225 / core.fps
 
     def update(self):
         # gestion si accel > accelMax
@@ -75,6 +80,9 @@ class Player:
         for elem in self.projectiles:
             elem.update()
 
+        if self.immunity and (time.time() - self.immunityStart > self.immunityDuration):
+            self.immunity = False
+
     def show(self):
         for elem in self.projectiles:
             elem.show()
@@ -83,21 +91,48 @@ class Player:
         p2 = self.pos + Vector2(0, 15).rotate(self.rotation)
         p3 = self.pos + Vector2(7, -5).rotate(self.rotation)
         p4 = self.pos + Vector2(0, 0).rotate(self.rotation)
+        core.Draw.polygon(self.color_white, (p1, p2, p3, p4))
+        p1 = self.pos + Vector2(-9, -7).rotate(self.rotation)
+        p2 = self.pos + Vector2(0, 17).rotate(self.rotation)
+        p3 = self.pos + Vector2(9, -7).rotate(self.rotation)
+        p4 = self.pos + Vector2(0, -2).rotate(self.rotation)
+        core.Draw.polyline(self.color_NeonBlue, (p1, p2, p3, p4), 3)
 
-        core.Draw.polygon(self.color, ((p1), (p2), (p3), (p4)))
-
-    def createProj(self, vel, pos, rotation):
+    def createProj(self):
+        rota = self.rotation
         # si le temps depuis le dernier tir est supérieur au cooldown entre deux tir, on crée un nouveau projectile
         if (len(self.projectiles) == 0) or ((time.time() - self.projectiles[-1].startTime) > self.shotCD):
             for i in range(0, self.bonusProjNumber):
                 if i % 2 == 0:
-                    rotation += 15*i
+                    rota += 15*i
                 else:
-                    rotation -= 15*i
+                    rota -= 15*i
                 proj = Projectile()
                 proj.size = 1 + 2 * self.bonusProjSize
+                proj.life = self.bonusProjLevel
                 proj.color = (0, 219, 255)
-                proj.pos = Vector2(pos)
-                proj.acc = proj.acc.rotate(rotation)        #applique la rotation au vecteur d'acceleration du projectile
-                proj.acc += vel                             #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
+                proj.pos = Vector2(self.pos)
+                proj.acc = proj.acc.rotate(rota)                #applique la rotation au vecteur d'acceleration du projectile
+                proj.acc += self.vel                            #ajoute le vecteur de vitesse actuel du vaisseau à l'acceleration du projectile
                 self.projectiles.append(proj)
+
+    def createBomb(self):
+        rota = self.rotation
+        if self.bomb > 1 and (time.time() - self.lastBombTime > 5):
+            for i in range(0, 24):
+                rota += 15*i
+                proj = Projectile()
+                proj.size = 1 + 2 * self.bonusProjSize
+                proj.life = self.bonusProjLevel
+                proj.color = (0, 219, 255)
+                proj.pos = Vector2(self.pos)
+                proj.acc = proj.acc.rotate(rota)
+                self.projectiles.append(proj)
+            self.bomb -= 1
+            self.lastBombTime = time.time()
+
+    def kill(self):
+        self.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
+        self.vies -= 1
+        self.immunity = True
+        self.immunityStart = time.time()
