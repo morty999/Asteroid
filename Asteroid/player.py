@@ -18,7 +18,7 @@ class Player:
         self.maxAcc = 2
         self.rotation = 0
         self.decel = 0.98
-        self.vies = 5
+        self.vies = 1
         self.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
         self.acc = Vector2(0, 0)
         self.vel = Vector2(0, 0)

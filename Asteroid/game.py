@@ -5,13 +5,16 @@ import pygame
 import core
 from Asteroid.map import Map
 from Asteroid.player import Player
-from Asteroid.menu import MainMenu
+from Asteroid.menu import MainMenu, GameOver
+
 
 class Game:
     def __init__(self):
         pygame.init()
-        self.mainMenu = MainMenu(self)
         self.map = Map()
+        self.mainMenu = MainMenu(self)
+        self.GOMenu = GameOver(self)
+        self.GameOver = False
         #Etats
         self.running, self.playing, self.pauseMenu = True, False, False
         #Input utilisateur
@@ -24,22 +27,22 @@ class Game:
 
     def update(self):
         self.check_events()
-
+        print(self.playing)
+        print(self.GameOver)
         if self.playing:
             self.game_loop()
-
-        elif self.pauseMenu:
-            pass
 
         else:
             self.menu_loop()
 
     def menu_loop(self):
-        #core.Draw.text((255,255,255), "MAIN MENU", (10,0))
-        self.mainMenu.display_menu()
-        '''
-        self.reset_keys()
+        if GameOver is True:
+            self.GOMenu.display_menu()
+        else:
+            self.mainMenu.display_menu()
 
+        self.reset_keys()
+        '''
         self.mainMenu.move_cursor()
         self.mainMenu.check_input()
         '''
@@ -57,6 +60,9 @@ class Game:
             self.map.player.createProj()
         if self.SPECIAL_KEY:
             self.map.player.createBomb()
+        if self.map.player.vies <= 0:
+            self.playing = False
+            self.GameOver = True
         self.map.update()
         self.map.show()
                 
