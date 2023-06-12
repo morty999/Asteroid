@@ -5,7 +5,7 @@ import pygame
 import core
 from Asteroid.map import Map
 from Asteroid.player import Player
-from Asteroid.menu import MainMenu, GameOver
+from Asteroid.menu import MainMenu, GameOver, Pause
 
 
 class Game:
@@ -14,12 +14,18 @@ class Game:
         self.map = Map()
         self.mainMenu = MainMenu(self)
         self.GOMenu = GameOver(self)
-        self.GameOver = False
+        self.pauseMenu = Pause(self)
+
         #Etats
-        self.running, self.playing, self.pauseMenu = True, False, False
+        self.running = True
+        self.playing = False
+        self.GameOver = False
+        self.pause = False
+
         #Input utilisateur
         self.UP_KEY, self.DOWN_KEY, self.LEFT_KEY, self.RIGHT_KEY = False, False, False, False
         self.SPACE_KEY, self.SPECIAL_KEY, self.START_KEY, self.BACK_KEY = False, False, False, False
+
         #self.font_name = 'Nom'
         self.font_name = pygame.font.get_default_font()
         self.BLACK, self.WHITE = (0,0,0), (255, 255, 255)
@@ -36,12 +42,14 @@ class Game:
             self.menu_loop()
 
     def menu_loop(self):
-        if GameOver is True:
+        if self.GameOver:
             self.GOMenu.display_menu()
+        elif self.pause:
+            self.pauseMenu.display_menu()
         else:
             self.mainMenu.display_menu()
 
-        self.reset_keys()
+        #self.reset_keys()
         '''
         self.mainMenu.move_cursor()
         self.mainMenu.check_input()
@@ -63,6 +71,9 @@ class Game:
         if self.map.player.vies <= 0:
             self.playing = False
             self.GameOver = True
+        if self.BACK_KEY:
+            self.playing = False
+            self.pause = True
         self.map.update()
         self.map.show()
                 

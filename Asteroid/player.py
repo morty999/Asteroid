@@ -18,7 +18,7 @@ class Player:
         self.maxAcc = 2
         self.rotation = 0
         self.decel = 0.98
-        self.vies = 1
+        self.vies = 5
         self.pos = Vector2(core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2)
         self.acc = Vector2(0, 0)
         self.vel = Vector2(0, 0)
@@ -91,7 +91,10 @@ class Player:
         p2 = self.pos + Vector2(0, 15).rotate(self.rotation)
         p3 = self.pos + Vector2(7, -5).rotate(self.rotation)
         p4 = self.pos + Vector2(0, 0).rotate(self.rotation)
-        core.Draw.polygon(self.color_white, (p1, p2, p3, p4))
+        if self.immunity:
+            core.Draw.polygon(self.color_NeonBlue, (p1, p2, p3, p4))
+        else:
+            core.Draw.polygon(self.color_white, (p1, p2, p3, p4))
         p1 = self.pos + Vector2(-9, -7).rotate(self.rotation)
         p2 = self.pos + Vector2(0, 17).rotate(self.rotation)
         p3 = self.pos + Vector2(9, -7).rotate(self.rotation)
@@ -118,7 +121,7 @@ class Player:
 
     def createBomb(self):
         rota = self.rotation
-        if self.bomb > 1 and (time.time() - self.lastBombTime > 5):
+        if self.bomb >= 1 and (time.time() - self.lastBombTime > 5):
             for i in range(0, 24):
                 rota += 15*i
                 proj = Projectile()

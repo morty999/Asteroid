@@ -151,8 +151,6 @@ class GameOver(Menu):
                 self.game.playing = True
                 self.game.GameOver = False
                 self.game.map = Map()
-            elif self.state == 'Credits':
-                pass
             elif self.state == 'Exit':
                 game.running, game.playing, game.mainMenu, game.pauseMenu = False, False, False, False
                 game.mainMenu.run_display = False
@@ -184,3 +182,64 @@ class GameOver(Menu):
         p3 = self.offsetCursor + Vector2(self.cursorLength, self.cursorHeight)
         p4 = self.offsetCursor + Vector2(0, self.cursorHeight)
         core.Draw.polyline((255, 0, 0), (p1, p2, p3, p4), 5)
+
+class Pause(Menu):
+    def __init__(self, game):
+        Menu.__init__(self, game)
+        self.state = "Start"
+        self.titrex, self.titrey = self.mid_w + 150, self.indent_h - 3 * self.line_spacing
+        self.scorex,self.scorey = self.mid_w + 150, self.indent_h - self.line_spacing
+        self.restartx, self.restarty = self.indent_w, self.indent_h + 2 * self.line_spacing
+        self.exitx, self.exity = self.indent_w, self.indent_h + 3 * self.line_spacing
+        self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
+        self.background = core.Texture("textures/GameOver.jpg", Vector2(0, 0), 0,(core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
+        self.background.load()
+
+    def display_menu(self):
+        if self.background.ready:
+            self.background.show()
+        self.game.check_events()
+        self.check_input()
+        self.display_text((51, 214, 255), 'Pause', (self.titrex, self.titrey), 120, self.tile_font)
+        self.display_text(self.font_color, 'Score: ' + str(self.game.map.score), (self.scorex, self.scorey), 80, self.tile_font)
+        self.display_text(self.font_color, 'RESUME', (self.restartx, self.restarty), self.font_size, self.text_font)
+        self.display_text(self.font_color, 'EXIT', (self.exitx, self.exity), self.font_size, self.text_font)
+        self.draw_cursor()
+
+    def check_input(self):
+        self.move_cursor()
+        if self.game.START_KEY:
+            if self.state == 'Start':
+                self.game.playing = True
+                self.game.pause = False
+            elif self.state == 'Exit':
+                game.running, game.playing, game.mainMenu, game.pauseMenu = False, False, False, False
+                game.mainMenu.run_display = False
+
+    def move_cursor(self):
+        if time.time() - self.lastCursorMove > self.cursorCD:
+            self.lastCursorMove = time.time()
+            if self.game.DOWN_KEY:
+                if self.state == 'Start':
+                    self.cursor_rect.midtop = (self.exitx + self.offset, self.exity)
+                    self.state = 'Exit'
+                elif self.state == 'Exit':
+                    self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
+                    self.state = 'Start'
+
+            elif self.game.UP_KEY:
+                if self.state == 'Start':
+                    self.cursor_rect.midtop = (self.exitx + self.offset, self.exity)
+                    self.state = 'Exit'
+                elif self.state == 'Exit':
+                    self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
+                    self.state = 'Start'
+
+    def draw_cursor(self):
+        self.offsetCursor = Vector2(self.cursor_rect.x + 60, self.cursor_rect.y - 5)
+        # def points rectangle Cursor
+        p1 = self.offsetCursor
+        p2 = self.offsetCursor + Vector2(self.cursorLength, 0)
+        p3 = self.offsetCursor + Vector2(self.cursorLength, self.cursorHeight)
+        p4 = self.offsetCursor + Vector2(0, self.cursorHeight)
+        core.Draw.polyline((51, 214, 255), (p1, p2, p3, p4), 5)
