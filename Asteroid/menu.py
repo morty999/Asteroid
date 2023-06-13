@@ -192,7 +192,7 @@ class Pause(Menu):
         self.restartx, self.restarty = self.indent_w, self.indent_h + 2 * self.line_spacing
         self.exitx, self.exity = self.indent_w, self.indent_h + 3 * self.line_spacing
         self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
-        self.background = core.Texture("textures/GameOver.jpg", Vector2(0, 0), 0,(core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
+        self.background = core.Texture("textures/pxfuel.jpg", Vector2(0, 0), 0,(core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
         self.background.load()
 
     def display_menu(self):
