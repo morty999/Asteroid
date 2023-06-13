@@ -11,7 +11,7 @@ from Asteroid.map import Map
 class Menu:
     def __init__(self, game):
         self.game = game
-        self.mid_w, self.mid_h, self.indent_w, self.indent_h = core.WINDOW_SIZE[1] / 2, core.WINDOW_SIZE[0] / 2, 200, 200
+        self.mid_w, self.mid_h, self.indent_w, self.indent_h = core.WINDOW_SIZE[0] / 2, core.WINDOW_SIZE[1] / 2, 200, 200
         self.line_spacing = 70
         self.cursor_rect = pygame.Rect(0, 0, 20, 20)
         self.offset = - 100
@@ -54,7 +54,7 @@ class MainMenu(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = "Start"
-        self.titrex, self.titrey = self.mid_w, self.indent_h - 2 * self.line_spacing
+        self.titrex, self.titrey = self.mid_w-350, self.indent_h - 2 * self.line_spacing
         self.startx, self.starty = self.indent_w, self.indent_h + 2*self.line_spacing
         self.creditsx, self.creditsy = self.indent_w, self.indent_h + 3 * self.line_spacing
         self.exitx, self.exity = self.indent_w, self.indent_h + 4 * self.line_spacing
@@ -125,8 +125,8 @@ class GameOver(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = "Start"
-        self.titrex, self.titrey = self.mid_w, self.indent_h - 3 * self.line_spacing
-        self.scorex,self.scorey = self.mid_w + 150, self.indent_h - self.line_spacing
+        self.titrex, self.titrey = self.mid_w - 400, self.indent_h - 2 * self.line_spacing
+        self.scorex,self.scorey = self.mid_w - 200, self.indent_h
         self.restartx, self.restarty = self.indent_w, self.indent_h + 2 * self.line_spacing
         self.exitx, self.exity = self.indent_w, self.indent_h + 3 * self.line_spacing
         self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
@@ -139,7 +139,7 @@ class GameOver(Menu):
         self.game.check_events()
         self.check_input()
         self.display_text((255, 0, 0), 'Game Over', (self.titrex, self.titrey), 120, self.tile_font)
-        self.display_text(self.font_color, 'Score: ' + str(self.game.map.score), (self.scorex, self.scorey), 80, self.tile_font)
+        self.display_text(self.font_color, 'Score: ' + str(self.game.map.score), (self.scorex - ((len(str(self.game.map.score))-1)*25), self.scorey), 80, self.tile_font)
         self.display_text(self.font_color, 'RESTART', (self.restartx, self.restarty), self.font_size, self.text_font)
         self.display_text(self.font_color, 'EXIT', (self.exitx, self.exity), self.font_size, self.text_font)
         self.draw_cursor()
@@ -187,8 +187,8 @@ class Pause(Menu):
     def __init__(self, game):
         Menu.__init__(self, game)
         self.state = "Start"
-        self.titrex, self.titrey = self.mid_w + 150, self.indent_h - 3 * self.line_spacing
-        self.scorex,self.scorey = self.mid_w + 150, self.indent_h - self.line_spacing
+        self.titrex, self.titrey = self.mid_w - 200, self.indent_h - 2 * self.line_spacing
+        self.scorex,self.scorey = self.mid_w - 200, self.indent_h
         self.restartx, self.restarty = self.indent_w, self.indent_h + 2 * self.line_spacing
         self.exitx, self.exity = self.indent_w, self.indent_h + 3 * self.line_spacing
         self.cursor_rect.midtop = (self.restartx + self.offset, self.restarty)
@@ -201,7 +201,7 @@ class Pause(Menu):
         self.game.check_events()
         self.check_input()
         self.display_text((51, 214, 255), 'Pause', (self.titrex, self.titrey), 120, self.tile_font)
-        self.display_text(self.font_color, 'Score: ' + str(self.game.map.score), (self.scorex, self.scorey), 80, self.tile_font)
+        self.display_text(self.font_color, 'Score: ' + str(self.game.map.score), (self.scorex - ((len(str(self.game.map.score))-1)*22), self.scorey), 80, self.tile_font)
         self.display_text(self.font_color, 'RESUME', (self.restartx, self.restarty), self.font_size, self.text_font)
         self.display_text(self.font_color, 'EXIT', (self.exitx, self.exity), self.font_size, self.text_font)
         self.draw_cursor()

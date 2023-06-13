@@ -14,10 +14,10 @@ class Map:
     def __init__(self):
         self.background = core.Texture("textures/bg_2.jpg", Vector2(0,0), 0, (core.WINDOW_SIZE[0], core.WINDOW_SIZE[1]))
         self.background.load()
-        self.level = 1                                         # Niveau de la partie
+        self.level = 0                                         # Niveau de la partie
         self.initAsteroidDone = False
         self.maxAsteroid = 5 + 2 * self.level
-        self.maxEnemy = 2
+        self.maxEnemy = 2 + self.level
         self.size = Vector2(core.WINDOW_SIZE)
         self.asteroid = []
         self.enemy = []
@@ -26,13 +26,13 @@ class Map:
         self.color_white = (255, 255, 255)
         self.color_NeonBlue = (0, 219, 255)
         # Game values
-        self.spawnAsteCD = 3
-        self.spawnEnemyCD = 10
+        self.spawnAsteCD = 3 - (0.45*self.level)
+        self.spawnEnemyCD = 10 - (1.5*self.level)
+        self.enemyShotCD = 3 - (0.45 * self.level)
         self.score = 0
         self.startTime = time.time()
         self.elapsedTime = time.time()
         self.spawnTimeEnemy = time.time()
-
 
 
     def show(self):
@@ -47,7 +47,7 @@ class Map:
         self.player.show()
         core.Draw.text(self.color_white, "Score: " + str(self.score), (10, 0))
         core.Draw.text(self.color_white, "Time: " + str(int(self.elapsedTime)), (10, 60))
-        core.Draw.text(self.color_white, "Bomb: " + str(int(self.player.bomb)), (10, 140))
+        core.Draw.text(self.color_white, "Level: " + str(int(self.level)), (10, 140))
         for i in range(0, self.player.vies):
             p1 = (10 + (30*i), 60)
             p2 = (20 + (30*i), 35)
@@ -86,6 +86,7 @@ class Map:
         self.initAsteroid()
         self.checkCollision()
         self.Purge()
+        self.levelUp()
 
     def initAsteroid(self):
         if not self.initAsteroidDone:
@@ -110,6 +111,7 @@ class Map:
 
     def spawnEnemy(self):
         ene = Enemy()
+        ene.shotCD = self.enemyShotCD
         self.enemy.append(ene)
 
     def splitAsteroid(self,aste):
@@ -189,6 +191,29 @@ class Map:
         for enemy in self.enemy:
             if enemy.destroyed:
                 self.enemy.remove(enemy)
+
+    def levelUp(self):
+        if 10000 <= self.score < 20000 and self.level < 1:
+            self.level = 1
+            self.initAsteroidDone = False
+        elif 20000 <= self.score < 30000 and self.level < 2:
+            self.level = 2
+            self.initAsteroidDone = False
+        elif 30000 <= self.score < 40000 and self.level < 3:
+            self.level = 3
+            self.initAsteroidDone = False
+        elif 40000 <= self.score < 50000 and self.level < 4:
+            self.level = 4
+            self.initAsteroidDone = False
+        elif 50000 <= self.score < 60000 and self.level < 5:
+            self.level = 5
+            self.initAsteroidDone = False
+        elif self.score >= 60000:
+            self.level = 6
+            self.initAsteroidDone = False
+
+
+
 
 '''
             for aster in self.asteroid:
